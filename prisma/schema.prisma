@@ -1,0 +1,137 @@
+
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario  {
+  id        String    @id @default(uuid())
+  nome      String
+  email     String
+  senha     String
+  create_at DateTime? @default(now())
+  update_at DateTime? @default(now())
+
+  @@map("usuarios")
+}
+
+model Categoria{
+  id  String @id @default(uuid())
+  nome String
+
+   create_at DateTime? @default(now())
+  update_at DateTime? @default(now())
+
+  produtos Produto[]
+  @@map("categorias")
+}
+
+model Produto {
+  id         String    @id @default(uuid())
+  nome       String
+  fabricante String
+  quantidade String
+  banner     String
+  preco      String
+  tamanho    String
+  cor        String
+
+  create_at  DateTime? @default(now())
+  update_at  DateTime? @default(now())
+
+   categorias Categoria@relation(fields: [categoriaId],references: [id])
+   categoriaId String 
+    
+   itens Item []
+   
+  @@map("produtos")
+}
+model Item {
+  id         String    @id @default(uuid())
+ 
+  quantidade           String
+  preco_unitario       String
+  proco_total          String
+
+  create_at  DateTime? @default(now())
+  update_at  DateTime? @default(now())
+
+   produtos Produto @relation(fields: [ProdutoId], references: [id])
+   ProdutoId String
+
+    pedidos Pedido @relation(fields: [PedidoId],references: [id])
+    PedidoId String 
+  
+  @@map("itens")
+}
+
+
+
+model Pedido{
+  id                String @id @default(uuid())
+  numero_do_pedido  String
+
+  create_at DateTime? @default(now())
+  update_at DateTime? @default(now())
+
+ clientes Cliente @relation(fields: [ClienteId], references: [id])
+ ClienteId String
+  
+  itens Item []
+  
+  pagamento Pagamento?
+  @@map("pedidos")
+}
+
+model Cliente {
+  id          String    @id @default(uuid())
+  nome        String
+  cpf_cnpj    String
+  rg_Ie       String
+  celular     String
+  fixo        String
+  rua         String
+  complemento String
+  cep          String
+  bairro      String
+  cidade      String
+  estado      String
+  create_at   DateTime? @default(now())
+  update_at   DateTime? @default(now())
+   
+  pedido Pedido []
+
+  @@map("clientes")
+
+
+}
+
+model Pagamento{
+  id                          String @id @default(uuid())
+  forma_de_pagamento          String
+  data_de_vencimento          String
+  Identificacao_do_Pagador    String
+ Identificacao_do_Beneficiario String
+
+  create_at DateTime? @default(now())
+  update_at DateTime? @default(now())
+
+ pedidos Pedido @relation(fields: [PedidoId],references: [id])
+ PedidoId String @unique
+
+  @@map("pagamentos")
+}
+
+
+
+
+
+

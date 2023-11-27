@@ -1,0 +1,52 @@
+import prismaClient from "../../prisma";
+
+
+interface CriarProduto{
+    nome       : string   
+    fabricante : string
+    quantidade : string
+    banner     : string
+    preco      : string
+    tamanho    : string
+    cor      : string
+    categoriaId: string  
+    
+}
+
+class CriarProdutoServices{
+    async execute({nome,fabricante,quantidade,banner,preco,tamanho,cor,categoriaId}:CriarProduto){
+       // console.log("ser:",nome,fabricante,quantidade,banner,preco,tamanho,cor,categoriaId)
+
+         if (!nome||!fabricante||!quantidade||!banner||!preco||!tamanho||!cor||!categoriaId ) {
+              throw new Error("Preencha os campos vasios")          
+         }
+            const  CriarProduto = await prismaClient.produto.create({
+                data:{
+                    nome :  nome,     
+                    fabricante :fabricante,
+                    quantidade :quantidade ,
+                    banner :banner,
+                     preco  :preco ,
+                    tamanho:tamanho,
+                     cor   :cor,
+                     categoriaId:categoriaId,
+                },select:{
+                    nome : true,     
+                    fabricante :true,
+                    quantidade :true ,
+                     banner :true,
+                     preco  :true ,
+                    tamanho:true,
+                    cor    : true,
+                    categoriaId:true,
+                }
+
+            })
+
+            return {dados:"produto cadastrado"}
+    }
+
+
+
+} 
+export{CriarProdutoServices}
